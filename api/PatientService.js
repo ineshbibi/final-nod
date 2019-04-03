@@ -20,7 +20,7 @@ router.post('/add' , function (req,res,next) {
 
 
 router.post('/addDoctor' , function (req,res,next) {
-    var doctor = new Doctor(req.body);
+    var doctor = new pratitioner(req.body);
 
     doctor.save(function(err, todo)  {
         if(err)
@@ -52,7 +52,13 @@ router.post('/:id/labTest', function (req, res) {
             res.send(err)
         else {
 
-            patient.labTests.push(req.body)
+            patient.labTests.push({
+                establishement :req.body.establishement,
+                testDate: new Date(req.body.testDate),
+                reference: req.body.reference,
+                nomTest:req.body.nomTest,
+                taux:req.body.taux
+            })
             patient.save()
             res.send(patient)
         }
