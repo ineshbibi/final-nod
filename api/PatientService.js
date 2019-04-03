@@ -1,5 +1,5 @@
 var hello = require('../Models/patients');
-var Doctor = require('../Models/pratitioner');
+var pratitioner = require('../Models/pratitioner');
 var express = require('express');
 
 var router = express.Router();
@@ -195,6 +195,7 @@ router.get('/obesite/:id',function(req,res,next){
     var dt = new DecisionTree(training_data, class_name, features);
     var id = req.params.id;
     var conseil;
+    var doctorList=[];
     hello.findById(id).exec(function(err,patient){
         if(err)
             res.status(400).send(err);
@@ -206,7 +207,52 @@ router.get('/obesite/:id',function(req,res,next){
                 weight: patient.weight
 
             });
-        res.send({"predicted":predicted})}
+        if(predicted == 0 ){
+        conseil = "vous êtes en bonne santé" ;
+        res.send({"Resultat":predicted,"Conseils":conseil}); 
+        }  
+        if(predicted == 1 ){
+            patient.labTests.forEach(function(labTest){
+                if ((labTest.nomTest =="coeur")&&(labTest.taux <= 50)){
+                    conseil = "vous être un peu obése voici nos conseils selon votre dossier médical: pratiquez plus de sport" ;
+
+                }
+                if ((labTest.nomTest =="coeur")&&(labTest.taux > 50)){
+                    conseil = "vous être un peu obése voici nos conseils selon votre dossier médical: vous devez consulter un nutritioniste voici des suggestions" ;
+                    pratitioner.find({"speciality" : "nutrition"},function(err,doctors){
+                        if(err)
+                        res.send(err)
+                        if(!doctors)
+                        doctorList = null;
+                        else
+                    
+                        res.send({"Resultat":predicted,"Conseils":conseil,"doctors":doctors});
+
+                    });
+
+                    
+                }
+
+
+            });
+            
+        } 
+        if(predicted == -1 ){
+                conseil = "vous être un peu mince voici nos conseils selon votre dossier médical" ;
+                pratitioner.find({"speciality" : "nutrition"},function(err,doctors){
+                    if(err)
+                    res.send(err)
+                    if(!doctors)
+                    doctorList = null;
+                    else
+                
+                    res.send({"Resultat":predicted,"Conseils":conseil,"doctors":doctors});
+
+                });
+        }   
+
+    
+    }
 
     });
 

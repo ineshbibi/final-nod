@@ -19,7 +19,7 @@ var  NutritionSchema = new Schema({
 
 var labTestResultSchema = new Schema ({
     establishement :{type:String},
-    testDate: {type:String},
+    testDate: {type:Date},
     reference: {type:String},
     nomTest:{type:String},
     taux:{type:Number}
