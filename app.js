@@ -7,7 +7,7 @@ var db = require('./Models/db');
 var patientRouter= require('./api/PatientService');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var AuthController = require('./api/AuthController');
 var app = express();
 
 // view engine setup
@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/Patient',patientRouter);
+app.use('/api/auth', AuthController);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
